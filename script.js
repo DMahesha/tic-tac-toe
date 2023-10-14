@@ -1,6 +1,8 @@
 const container = document.getElementById('container')
-const addInfo = document.getElementById('additional-info')
+const addInfo = document.getElementById('reset-button')
+const winner = document.getElementById('winner')
 
+//creates the game board
 for (i = 0; i < 3; i++) {
     let vCell = document.createElement('div')
     vCell.style.cssText = 'width: 50px; height: 50px; border: solid 1px black'
@@ -14,6 +16,7 @@ for (i = 0; i < 3; i++) {
     }
 }
 
+//markers for the players
 let cells = Array.from(document.querySelectorAll('#container>div'))
 let round = 0
 let xPlays = []
@@ -33,7 +36,7 @@ cells.forEach(cell => {
                     for (z = 0; z < toCheck.length; z++) {
                         test = [toCheck[x], toCheck[y], toCheck[z]]
                         if (check.indexOf(test) != -1) {
-                            e.target.style.cssText = 'width: 50px; height: 50px; border: solid 1px black; background-color: green'
+                            gameWon('X',x,y,z)
                         }
                     }
                 }
@@ -50,7 +53,7 @@ cells.forEach(cell => {
                     for (z = 0; z < toCheck.length; z++) {
                         test = [toCheck[x], toCheck[y], toCheck[z]]
                         if (check.indexOf(test) != -1) {
-                            e.target.style.cssText = 'width: 50px; height: 50px; border: solid 1px black; background-color: green'
+                            gameWon('O',x,y,z)
                         }
                     }
                 }
@@ -59,19 +62,39 @@ cells.forEach(cell => {
     })
 })
 
-// if first 3 xPlays are in any winningSets
-// if any 3 xPlays of xPlays is in a winningSet
+//winning game sets
+let winningSets = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
 
-/*
+//announcement for a player winning
+function gameWon(player, x,y,z) {
+    cells[toCheck[x]].style.cssText = 'width: 50px; height: 50px; border: solid 1px black; background-color: green'
+    cells[toCheck[y]].style.cssText = 'width: 50px; height: 50px; border: solid 1px black; background-color: green'
+    cells[toCheck[z]].style.cssText = 'width: 50px; height: 50px; border: solid 1px black; background-color: green'
+    
+    let winnerAnnounce = document.createElement('div')
+    winnerAnnounce.textContent = `The winner is player ${player}.`
+    winner.appendChild(winnerAnnounce)
+}
 
-check = [[0,1,2], [1,2,3], [2,3,4]]
-test = [0,1,2]
+//announcement for a tie
+function gameTie() {
+    if (xPlays.length + oPlays.length == 9) {
+        let tieAnnounce = document.createElement('div')
+        tieAnnounce.textContent = `This game is a tie.`
+        winner.appendChild(tieAnnounce)
+    }
+}
 
-test = [0,1,2,3]
--> can only be 3 length
--> 
-*/
-
+//resets the game board
 const resetButton = document.createElement('button')
 resetButton.textContent = 'Reset Board'
 addInfo.appendChild(resetButton)
@@ -80,22 +103,8 @@ resetButton.addEventListener('click', () => {
 })
 function resetBoard(item) {
     item.textContent = ''
+    item.style.cssText = 'width: 50px; height: 50px; border: solid 1px black'
     round = 0
     xPlays = []
     oPlays = []
 }
-
-// array of winning-arrays-for-x
-// o picks i = () => remove all arrays with i from winning-arrays-for-x
-// if there are no sets left = () => draw
-
-let winningSets = [
-    [0, 1, 2], //x
-    [3, 4, 5], //x
-    [6, 7, 8], //
-    [0, 3, 6], //x
-    [1, 4, 7], //
-    [2, 5, 8], //x
-    [0, 4, 8], //x
-    [2, 4, 6]  //
-]
